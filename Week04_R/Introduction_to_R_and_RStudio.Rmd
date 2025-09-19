@@ -456,5 +456,3 @@ library(swirl)
 install_course_github("swirldev", "R_Programming_E")
 swirl()
 ```
-
-  To get extra credit, email completed assignments to "kaylaxu@usc.edu" when prompted. You will receive 0.25 points for completion of any swirl exercise, with a max of 5 points to be added to your homework grade.
