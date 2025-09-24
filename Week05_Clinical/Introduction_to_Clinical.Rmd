@@ -228,7 +228,9 @@ A significant portion of your coding work will be data cleaning and preparation 
 
 1) Create a mask to remove all NA values from vital_status
 ```{r}
-vital_status_na_mask <- 
+# Filled in example for you! 
+vital_status_na_mask <- !is.na(clinic$vital_status)
+
 ```
 
 2) Create a mask to select for male patients
