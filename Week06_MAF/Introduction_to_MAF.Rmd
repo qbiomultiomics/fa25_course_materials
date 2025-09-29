@@ -1,8 +1,8 @@
 ---
 title: "Introduction to MAF"
-author: Mahija Mogalipuvvu, adapted from Nicole Black, Wade Boohar
+author: Erika Li, Jeanne Revilla, Mahija Mogalipuvvu, adapted from Nicole Black, Wade Boohar
 date: 07/17/22
-updated: 10/3/24
+updated: 9/29/2025
 ---
 
 ***Deliverables***
@@ -21,6 +21,17 @@ Load all necessary packages, read in the clinical data.csv file you have in your
 
 ```
 
+It's useful to save your MAF_object, so that you don't have to go through the trouble of querying and preparing it everytime. The saveRDS function allows us to save an R object, allowing us to access it directly from our files. 
+```{r}
+saveRDS(fill in with name of your MAF_object, file = "/path/to/analysis_data/maf_object.rds")
+# ex. saveRDS(MAF_object, file = "/home1/erika/490_cluster/analysis_data/maf_object.rds")
+```
+
+When you reopen a new R session and want to access your MAF_object, you can use the readRDS function to load the object back into a new variable.
+```{r}
+MAF_object <- readRDS(file = "/path/to/analysis_data/maf_object.rds")
+# ex. MAF_object <- readRDS(file = "/home1/erika/490_cluster/analysis_data/maf_object.rds")
+```
 
 *1*
 Choose a clinical variable (or any variable from clin_rad or clin_drug) to separate your populations into two different groups and rewrite the column or create a new column with that variable as a factor. ***Do not use age or vital_status as your clinical variable.*** Hint: if your variable is continuous, you will need to determine your own cutoffs for the different levels of the factor. If your variable is categorical and has more than two possible values, choose the two that are the most common.
