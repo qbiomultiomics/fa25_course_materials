@@ -6,7 +6,7 @@ updated: 10/05/25
 ---
 
 ```{r setup}
-    knitr::opts_knit$set(root.dir = normalizePath("")) 
+      knitr::opts_knit$set(root.dir = normalizePath("/home1/jrevilla/490_cluster/analysis_data")) 
 ```
 
 
@@ -42,9 +42,9 @@ str(rna_se)
 
 Use the dim() function to find the dimensions of the colData, rowRanges@elementMetadata, and unstranded dataframes. Record them below:
 
-  ~ colData (rows, cols):
-  ~ rowRanges@elementMetadata: 
-  ~ rna_se@assays@data$unstranded: 
+  ~ colData (rows, cols): 1231, 98
+  ~ rowRanges@elementMetadata: 60660, 10
+  ~ rna_se@assays@data$unstranded: 60660, 1231
 
 ```{r Exercise 1.2}
 # write code here
@@ -56,14 +56,14 @@ dim(rna_se@assays@data$unstranded)
 
 Fill out a description of the rows/columns of our data frames. You can use this as a cheat sheet moving forward.
   ~ colData
-        - Rows: 
-        - Columns: 
+        - Rows: patients
+        - Columns: clinical variables
   ~ rowRanges@elementMetadata
-        - Rows: 
-        - Columns:
+        - Rows: genes
+        - Columns: gene info
   ~ unstranded (in assays)
-        - Rows: 
-        - Columns: 
+        - Rows: genes
+        - Columns: patients
   
 ```{r Exercise 1.3}
 # colData: 
@@ -87,7 +87,7 @@ Using the nested dataframe colData in rna_se, view the first 15 values in the ag
 
 ```{r Exercise 2.1}
 # write code here
-
+rna_se@colData$age_at_index[1:15]
 
 ```
 
@@ -102,13 +102,13 @@ Call summary on the age_at_index column. Record the output below:
     
 ```{r Exercise 2.2}
 # write code here
-summary()
+summary(rna_se@colData$age_at_index)
 ```
 
 Create a data frame called rna_clinical that contains data from colData.
 
 ```{r Exercise 2.3}
-rna_clinical <-
+rna_clinical <- rna_se@colData
 
 ```
 
@@ -133,9 +133,11 @@ rna_clinical <- rna_clinical[,colnames_mask]
 
 Remember that patient with an N/A value in age_at_index? Let's subset them out.
 ```{r Exercise 2.6}
-age_NA_mask <- 
+age_NA_mask <- !is.na(rna_clinical$age_at_index)
   
-  
+rna_clinical <- rna_clinical[age_NA_mask,]  
+
+summary(rna_clinical$age_at_index)
 ```
 
 
@@ -145,21 +147,21 @@ Call head() on rowRanges@elementMetadata:
 
 ```{r Exercise 3.1}
 # write code here
-head()
+head(rna_se@rowRanges@elementMetadata)
 
 ```
 
 Create a data frame called rna_genes that contains data from elementMetadata.
 
 ```{r Exercise 3.2}
-rna_genes <- 
+rna_genes <- rna_se@rowRanges@elementMetadata
 
 ```
 
 Use the as.data.frame() function to change this from an S4 object to a data frame object
 
 ```{r Exercise 3.3}
-
+rna_genes <- as.data.frame(rna_genes)
 
 ```
 
@@ -177,13 +179,17 @@ Create a new data frame called "rna_counts" that contains the data from unstrand
 
 ```{r Exercise 4.2}
 
-rna_counts <-
+rna_counts <- rna_se@assays@data$unstranded
+rna_counts <- as.data.frame(rna_counts)
+
+rna_counts <- rna_counts[,age_NA_mask]
 
 ```
 
 Fetch the data for the first 5 patients and the first 15 rows.
 
 ```{r Exercise 4.3}
+rna_counts[1:15, 1:5]
 
 ```
 
@@ -209,8 +215,11 @@ Age columns:
 
 Use the information in age_at_index with an ifelse() statement to create a new column in rna_clinical called age_category. Remember ifelse(expression, x, y), where x happens if the expression is true, and y happens if it is false.
 
+
+Just like we did to "clinical", we are going to create a column in rna_clinical for age_category. Our cutoff will be "young" as <= 58 y/o, and "old" as > 58 y/o.
+
 ```{r Exercise 5.4}
-rna_clinical$age_category <- ifelse()
+rna_clinical$age_category <- ifelse(rna_clinical$age_at_index <= 58, "young", "old")
 
 ```
 
@@ -229,7 +238,7 @@ Oh no! These row names don't look very informative. We know that the rows in rna
 
 ```{r Exercise 5.6}
 
-rownames(rna_genes) <- 
+rownames(rna_genes) <- rna_genes$gene_id
 
 ```
 
@@ -248,8 +257,8 @@ Uh oh! Looks like neither the row nor column names are very informative. Given w
 
 ```{r Exercise 5.8}
 
-rownames(rna_counts) <-
-colnames(rna_counts) <-
+rownames(rna_counts) <- rna_genes$gene_id
+colnames(rna_counts) <- rownames(rna_clinical)
 
 ```
 
